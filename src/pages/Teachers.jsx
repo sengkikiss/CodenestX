@@ -128,9 +128,9 @@ const TeachersPage = ({ teachers, setTeachers, courses, role }) => {
           cols={[
             { key: "firstName", label: "Teacher", render: (_, r) => (
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <AvatarImg url={r.avatar_url} name={`${r.firstName} ${r.lastName}`} />
+                <AvatarImg url={r.avatar_url} name={r.fullNameNoPrefix || `${r.firstName} ${r.lastName}`} />
                 <div>
-                  <div style={{ fontWeight: 600 }}>{r.prefix} {r.firstName} {r.lastName}</div>
+                  <div style={{ fontWeight: 600 }}>{r.prefix} {r.fullNameNoPrefix || `${r.firstName} ${r.lastName}`.trim()}</div>
                   <div style={{ fontSize: 11, color: "var(--sub)" }}>{r.email}</div>
                 </div>
               </div>
@@ -191,8 +191,8 @@ const TeachersPage = ({ teachers, setTeachers, courses, role }) => {
         <FormGrid>
           <Field label="Employee ID" value={form.employeeId} onChange={set("employeeId")} placeholder="TCH-001" />
           <Field label="Join Date" type="date" value={form.joinDate} onChange={set("joinDate")} />
-          <Field label="Subject Taught" type="select" value={form.subject} onChange={set("subject")} options={["Mathematics", "Physics", "Chemistry", "Biology", "English", "History", "Geography", "Computer Science", "Art", "Music", "PE"]} required />
-          <Field label="Department" type="select" value={form.department} onChange={set("department")} options={["Science & Math", "Arts & Humanities", "Languages", "Technology", "Physical Education"]} />
+          <Field label="Subject Taught" type="select" value={form.subject} onChange={set("subject")} options={["C Programming","C#","C++","Python","UX/UI Design","Web Development"]} required />
+          <Field label="Department" type="select" value={form.department} onChange={set("department")} options={["IT"]} />
           <Field label="Qualification" value={form.qualification} onChange={set("qualification")} placeholder="e.g. Ph.D. Mathematics" />
           <Field label="Years of Experience" value={form.experience} onChange={set("experience")} placeholder="e.g. 10 years" />
           <Field label="Monthly Salary ($)" type="number" value={form.salary} onChange={set("salary")} placeholder="5000" />
@@ -208,9 +208,9 @@ const TeachersPage = ({ teachers, setTeachers, courses, role }) => {
         {viewItem && (
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24, padding: 16, background: "var(--hover)", borderRadius: 10 }}>
-              <AvatarImg url={viewItem.avatar_url} name={`${viewItem.firstName} ${viewItem.lastName}`} size={60} />
+              <AvatarImg url={viewItem.avatar_url} name={viewItem.fullNameNoPrefix || `${viewItem.firstName} ${viewItem.lastName}`} size={60} />
               <div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text)" }}>{viewItem.prefix} {viewItem.firstName} {viewItem.lastName}</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text)" }}>{viewItem.prefix} {viewItem.fullNameNoPrefix || `${viewItem.firstName} ${viewItem.lastName}`.trim()}</div>
                 <div style={{ fontSize: 13, color: "var(--sub)" }}>{viewItem.subject} · {viewItem.department}</div>
                 <div style={{ marginTop: 4 }}><Badge status={viewItem.status} /></div>
               </div>

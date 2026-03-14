@@ -120,7 +120,7 @@ const VideosPage = ({ videos, setVideos, courses, role, user }) => {
 
       {filtered.length === 0 && (
         <div style={{ textAlign: "center", padding: 60, color: "var(--sub)", border: "2px dashed var(--border)", borderRadius: 12 }}>
-          <div style={{ fontSize: 48, marginBottom: 10 }}>🎬</div>
+          <div style={{ fontSize: 48, marginBottom: 10 }}></div>
           <div style={{ fontWeight: 600 }}>No videos yet</div>
           <div style={{ fontSize: 13, marginTop: 4 }}>{canPost ? "Upload the first video for your students." : "Your teacher hasn't uploaded any videos yet."}</div>
         </div>
@@ -139,7 +139,7 @@ const VideosPage = ({ videos, setVideos, courses, role, user }) => {
                 {thumb
                   ? <img src={thumb} alt={v.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   : <div style={{ width: "100%", height: "100%", background: "linear-gradient(135deg,#1e1b4b,#4338ca)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <span style={{ fontSize: 52, opacity: .4 }}>🎬</span>
+                      <span style={{ fontSize: 52, opacity: .4 }}></span>
                     </div>
                 }
                 {/* PLAY BUTTON OVERLAY */}
@@ -163,7 +163,7 @@ const VideosPage = ({ videos, setVideos, courses, role, user }) => {
                     </div>
                   )}
                 </div>
-                <div style={{ fontSize: 11, color: "var(--sub)", marginTop: 6 }}>👤 {v.teacherName || "Unknown"}</div>
+                <div style={{ fontSize: 11, color: "var(--sub)", marginTop: 6 }}> {v.teacherName || "Unknown"}</div>
               </div>
             </div>
           );
@@ -192,7 +192,7 @@ const VideosPage = ({ videos, setVideos, courses, role, user }) => {
             <div onClick={() => thumbRef.current.click()} style={{ width: 100, height: 60, borderRadius: 8, border: "2px dashed var(--border)", overflow: "hidden", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--hover)", flexShrink: 0 }}>
               {thumbPreview
                 ? <img src={thumbPreview} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                : <span style={{ fontSize: 22 }}>🖼️</span>
+                : <span style={{ fontSize: 22 }}></span>
               }
             </div>
             <div>
@@ -213,7 +213,7 @@ const VideosPage = ({ videos, setVideos, courses, role, user }) => {
                 style={{ flex: 1, padding: "9px 0", borderRadius: 8, border: `1px solid ${uploadType === t ? "var(--text)" : "var(--border)"}`,
                   background: uploadType === t ? "var(--text)" : "var(--hover)",
                   color: uploadType === t ? "var(--card)" : "var(--text)", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>
-                {t === "url" ? "🔗 YouTube / URL" : "📁 Upload File"}
+                {t === "url" ? " YouTube / URL" : " Upload File"}
               </button>
             ))}
           </div>

@@ -35,14 +35,36 @@ const SettingsPage = ({ user, dark, setDark, setUser }) => {
   // Profile state
   const [name, setName]   = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
-  const [saving, setSaving] = useState(false);
-  const [toast, setToast] = useState(null);
+  const [saving, setSaving]       = useState(false);
+  const [toast, setToast]         = useState(null);
+  const [avatarUrl, setAvatarUrl] = useState(user?.avatar_url || null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+
+  const uploadAvatar = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setAvatarUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("avatar", file);
+      const res = await api.post("/auth/avatar", fd, { headers: { "Content-Type": "multipart/form-data" } });
+      setAvatarUrl(res.data.avatar_url);
+      const updated = { ...user, avatar_url: res.data.avatar_url };
+      localStorage.setItem("user", JSON.stringify(updated));
+      if (setUser) setUser(updated);
+      showToast("Avatar updated successfully");
+    } catch (err) {
+      showToast(err.response?.data?.error || "Failed to upload avatar", "error");
+    }
+    setAvatarUploading(false);
+  };
 
   // Fetch fresh profile from API on mount
   useEffect(() => {
     api.get("/auth/me").then(res => {
       setName(res.data.name || "");
       setEmail(res.data.email || "");
+      setAvatarUrl(res.data.avatar_url || null);
     }).catch(() => {});
   }, []);
 
@@ -145,13 +167,28 @@ const SettingsPage = ({ user, dark, setDark, setUser }) => {
         <Card>
           {/* Avatar section */}
           <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 28, paddingBottom: 24, borderBottom: "1px solid var(--border)" }}>
-            <Avatar name={name || user?.name} size={72} />
+            <div style={{ position: "relative" }}>
+              <Avatar name={name || user?.name} url={avatarUrl} size={80} />
+              <div style={{ position: "absolute", bottom: 0, right: 0, width: 26, height: 26, borderRadius: "50%",
+                background: "var(--text)", color: "var(--card)", display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 13, fontWeight: 700, border: "2px solid var(--card)", cursor: "pointer" }}
+                onClick={() => document.getElementById("avatar-upload").click()}>
+                {avatarUploading ? "…" : (
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
+                )}
+              </div>
+              <input id="avatar-upload" type="file" accept="image/*" capture="user" style={{ display: "none" }} onChange={uploadAvatar} />
+            </div>
             <div>
               <div style={{ fontSize: 18, fontWeight: 700, color: "var(--text)" }}>{name || user?.name}</div>
               <div style={{ fontSize: 13, color: "var(--sub)", marginTop: 2 }}>{email || user?.email}</div>
               <div style={{ marginTop: 6, display: "inline-block", padding: "2px 10px", borderRadius: 99, background: "var(--hover)", fontSize: 11, fontWeight: 700, color: "var(--sub)" }}>
                 {user?.role}
               </div>
+              <div style={{ fontSize: 11, color: "var(--sub)", marginTop: 6 }}>Click camera icon to take or upload a photo</div>
             </div>
           </div>
 

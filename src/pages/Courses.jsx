@@ -235,13 +235,13 @@ const CoursesPage = ({ courses, setCourses, teachers, students, role, user }) =>
               ))}
             </select>
           </div>
-          <Field label="Grade" type="select" value={form.grade} onChange={set("grade")} options={["", "Grade 9", "Grade 10", "Grade 11", "Grade 12"]} />
-          <Field label="Section" type="select" value={form.section} onChange={set("section")} options={["", "A", "B", "C", "D", "All"]} />
+          <Field label="Grade" type="select" value={form.grade} onChange={set("grade")} options={["Beginner","Intermediate","Advanced"]} />
+          {/* <Field label="Section" type="select" value={form.section} onChange={set("section")} options={["", "A", "B", "C", "D", "All"]} /> */}
           <Field label="Max Students" type="number" value={form.maxStudents} onChange={set("maxStudents")} />
           <Field label="Credits" type="number" value={form.credits} onChange={set("credits")} />
           <Field label="Duration" value={form.duration} onChange={set("duration")} placeholder="e.g. 16 weeks" />
           <Field label="Schedule" value={form.schedule} onChange={set("schedule")} placeholder="e.g. Mon/Wed 9:00-10:30" />
-          <Field label="Room" value={form.room} onChange={set("room")} placeholder="e.g. Room 101" />
+          <Field label="Room/Online class" value={form.room} onChange={set("room")} placeholder="e.g. Room 101" />
           <Field label="Start Date" type="date" value={form.startDate} onChange={set("startDate")} />
           <Field label="End Date" type="date" value={form.endDate} onChange={set("endDate")} />
           <Field label="Status" type="select" value={form.status} onChange={set("status")} options={["Active", "Inactive", "Completed"]} />

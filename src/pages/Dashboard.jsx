@@ -28,9 +28,10 @@ const AdminDashboard = ({ user, students, teachers, staff, payments }) => {
     .slice(-6)
     .map(([month, total]) => ({ month: month.slice(5), total }));
 
-  const gradeData = ["Grade 9","Grade 10","Grade 11","Grade 12"].map((g, i) => ({
-    name: g, value: students.filter(s => s.grade === g).length, color: COLORS[i]
-  }));
+  const years = ["Year 1","Year 2","Year 3","Year 4","Year 5"];
+  const gradeData = years.map((y, i) => ({
+    name: y, value: students.filter(s => s.yearOfStudy === y || s.grade === y).length, color: COLORS[i % COLORS.length]
+  })).filter(d => d.value > 0);
 
   return (
     <div>
@@ -63,7 +64,7 @@ const AdminDashboard = ({ user, students, teachers, staff, payments }) => {
         </Card>
 
         <Card>
-          <div style={{ fontSize:13, fontWeight:700, color:"var(--text)", marginBottom:16 }}>Students by Grade</div>
+          <div style={{ fontSize:13, fontWeight:700, color:"var(--text)", marginBottom:16 }}>Students by Year</div>
           <ResponsiveContainer width="100%" height={180}>
             <PieChart>
               <Pie data={gradeData} cx="50%" cy="50%" innerRadius={50} outerRadius={78} paddingAngle={3} dataKey="value">

@@ -114,7 +114,7 @@ const NotesPage = ({ notes, setNotes, courses, role, user }) => {
 
       {filtered.length === 0 && (
         <div style={{ textAlign: "center", padding: 60, color: "var(--sub)", border: "2px dashed var(--border)", borderRadius: 12 }}>
-          <div style={{ fontSize: 40, marginBottom: 10 }}>📝</div>
+          <div style={{ fontSize: 40, marginBottom: 10 }}></div>
           <div style={{ fontWeight: 600 }}>No notes yet</div>
           <div style={{ fontSize: 13, marginTop: 4 }}>{canPost ? "Post the first note for your students." : "Your teacher hasn't posted any notes yet."}</div>
         </div>

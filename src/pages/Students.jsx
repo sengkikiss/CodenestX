@@ -11,13 +11,10 @@ const API = "http://localhost:5000";
 const today = () => new Date().toISOString().split("T")[0];
 const BLANK_STU = {
   firstName: "", lastName: "", email: "", phone: "", dob: "", gender: "",
-  grade: "", section: "", address: "", guardianName: "", guardianPhone: "",
-  guardianRelation: "", bloodGroup: "", nationality: "", religion: "",
-  admissionNo: "", medicalNotes: "", status: "Active", enrolled: today()
+  major: "", yearOfStudy: "", address: "", status: "Active", enrolled: today()
 };
 
 const AvatarImg = ({ url, name, size = 34 }) => {
-
   const [err, setErr] = useState(false);
   if (url && !err) {
     const src = url.startsWith("http") ? url : API + url;
@@ -41,13 +38,13 @@ const StudentsPage = ({ students, setStudents, role }) => {
   const set = (k) => (v) => setForm(f => ({ ...f, [k]: v }));
 
   const filtered = students.filter(s =>
-    `${s.firstName} ${s.lastName} ${s.email} ${s.admissionNo}`.toLowerCase().includes(q.toLowerCase())
+    `${s.firstName} ${s.lastName} ${s.email} ${s.major || ""}`.toLowerCase().includes(q.toLowerCase())
   );
   const canEdit = role === "Admin" || role === "Staff";
 
   const openAdd = () => {
     setEditing(null);
-    setForm({ ...BLANK_STU, admissionNo: `ADM-${new Date().getFullYear()}-${String(students.length + 1).padStart(3, "0")}`, enrolled: today() });
+    setForm({ ...BLANK_STU, enrolled: today() });
     setAvatarPreview(null);
     setAvatarFile(null);
     setModal(true);
@@ -55,10 +52,20 @@ const StudentsPage = ({ students, setStudents, role }) => {
 
   const openEdit = (s) => {
     setEditing(s);
-    const clean = {};
-    Object.keys(BLANK_STU).forEach(k => { clean[k] = s[k] ?? ""; });
-    setForm(clean);
-    setAvatarPreview(s.avatar_url ? (s.avatar_url.startsWith("http") ? s.avatar_url : API + s.avatar_url) : null);
+    setForm({
+      firstName:   s.firstName   || "",
+      lastName:    s.lastName    || "",
+      email:       s.email       || "",
+      phone:       s.phone       || "",
+      dob:         (s.dob        || "").slice(0,10),
+      gender:      s.gender      || "",
+      major:       s.major       || "",
+      yearOfStudy: s.yearOfStudy || "",
+      address:     s.address     || "",
+      status:      s.status      || "Active",
+      enrolled:    (s.enrolled   || s.enrolled_at || "").slice(0,10),
+    });
+    setAvatarPreview(s.avatar_url || null);
     setAvatarFile(null);
     setModal(true);
   };
@@ -102,9 +109,6 @@ const StudentsPage = ({ students, setStudents, role }) => {
     } catch (err) {
       alert("Error: " + (err.response?.data?.error || err.message));
     }
-    // Reload from API to get fresh avatar_url
-const res2 = await api.get("/students");
-setStudents(res2.data);
     setSaving(false);
   };
 
@@ -116,7 +120,6 @@ setStudents(res2.data);
 
   return (
     <div>
-      
       <PageHeader title="Student Management" sub={`${students.length} enrolled students`}
         action={canEdit ? <Btn onClick={openAdd} icon="plus" label="Add Student" /> : null} />
 
@@ -136,10 +139,8 @@ setStudents(res2.data);
                 </div>
               </div>
             )},
-            { key: "admissionNo", label: "Adm. No", render: v => <span style={{ fontFamily: "monospace", fontSize: 12 }}>{v}</span> },
-            { key: "grade", label: "Grade" },
-            { key: "section", label: "Sec." },
-            { key: "guardianName", label: "Guardian" },
+            { key: "major", label: "Major" },
+            { key: "yearOfStudy", label: "Year" },
             { key: "status", label: "Status", render: v => <Badge status={v} /> },
           ]}
           rows={filtered}
@@ -180,32 +181,20 @@ setStudents(res2.data);
         <FormGrid>
           <Field label="First Name" value={form.firstName} onChange={set("firstName")} required />
           <Field label="Last Name" value={form.lastName} onChange={set("lastName")} required />
-          <Field label="Email Address" type="email" value={form.email} onChange={set("email")} required />
-          <Field label="Phone Number" value={form.phone} onChange={set("phone")} placeholder="555-0000" />
+          <Field label="Gender" type="select" value={form.gender} onChange={set("gender")} options={["Male","Female","Other"]} />
           <Field label="Date of Birth" type="date" value={form.dob} onChange={set("dob")} />
-          <Field label="Gender" type="select" value={form.gender} onChange={set("gender")} options={["Male", "Female", "Other"]} />
-          <Field label="Blood Group" type="select" value={form.bloodGroup} onChange={set("bloodGroup")} options={["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"]} />
-          <Field label="Nationality" value={form.nationality} onChange={set("nationality")} placeholder="e.g. Cambodian" />
-          <Field label="Religion" value={form.religion} onChange={set("religion")} placeholder="Optional" />
+          <Field label="Major / Subject" value={form.major} onChange={set("major")} placeholder="e.g. Computer Science" />
+          <Field label="Year of Study" type="select" value={form.yearOfStudy} onChange={set("yearOfStudy")} options={["Year 1","Year 2","Year 3","Year 4","Year 5"]} />
+          <Field label="Phone Number" value={form.phone} onChange={set("phone")} placeholder="555-0000" />
+          <Field label="Email Address" type="email" value={form.email} onChange={set("email")} required />
           <Field label="Address" value={form.address} onChange={set("address")} placeholder="Street, City, State" />
         </FormGrid>
 
         <SectionLabel>Academic Information</SectionLabel>
         <FormGrid>
-          <Field label="Admission No." value={form.admissionNo} onChange={set("admissionNo")} placeholder="ADM-2025-001" />
-          <Field label="Enrollment Date" type="date" value={form.enrolled} onChange={set("enrolled")} />
-          <Field label="Grade" type="select" value={form.grade} onChange={set("grade")} options={["Grade 9", "Grade 10", "Grade 11", "Grade 12"]} required />
-          <Field label="Section" type="select" value={form.section} onChange={set("section")} options={["A", "B", "C", "D"]} />
-          <Field label="Status" type="select" value={form.status} onChange={set("status")} options={["Active", "Inactive"]} />
-          <Field label="Medical Notes" value={form.medicalNotes} onChange={set("medicalNotes")} placeholder="Any conditions or allergies" />
+          <Field label="Status" type="select" value={form.status} onChange={set("status")} options={["Active","Inactive"]} />
         </FormGrid>
 
-        <SectionLabel>Guardian / Emergency Contact</SectionLabel>
-        <FormGrid>
-          <Field label="Guardian Name" value={form.guardianName} onChange={set("guardianName")} required />
-          <Field label="Relation" type="select" value={form.guardianRelation} onChange={set("guardianRelation")} options={["Father", "Mother", "Guardian", "Sibling", "Other"]} />
-          <Field label="Guardian Phone" value={form.guardianPhone} onChange={set("guardianPhone")} placeholder="555-0000" />
-        </FormGrid>
 
         <FormActions onCancel={() => setModal(false)} onSave={save} saveLabel={saving ? "Saving…" : editing ? "Update Student" : "Add Student"} />
       </Modal>
@@ -224,20 +213,14 @@ setStudents(res2.data);
             </div>
             <FormGrid>
               {[
-                ["Admission No.", viewItem.admissionNo],
-                ["Grade", viewItem.grade],
-                ["Section", viewItem.section],
+                ["Major", viewItem.major || "—"],
+                ["Year of Study", viewItem.yearOfStudy || "—"],
                 ["Phone", viewItem.phone],
                 ["DOB", viewItem.dob],
                 ["Gender", viewItem.gender],
-                ["Blood Group", viewItem.bloodGroup],
-                ["Nationality", viewItem.nationality],
-                ["Religion", viewItem.religion],
+
                 ["Address", viewItem.address],
-                ["Guardian", viewItem.guardianName],
-                ["Guardian Phone", viewItem.guardianPhone],
-                ["Guardian Relation", viewItem.guardianRelation],
-                ["Medical Notes", viewItem.medicalNotes || "None"],
+
               ].map(([k, v]) => (
                 <div key={k}>
                   <div style={{ fontSize: 11, fontWeight: 700, color: "var(--sub)", textTransform: "uppercase", marginBottom: 2 }}>{k}</div>
