@@ -76,7 +76,7 @@ const Login = () => {
             }}
           >
             {/* FIXED IMAGE PATH */}
-            <img src="src/logo.png" alt="CodenestX Academy Logo" width="95" />
+            <img src="logo.png" alt="CodenestX Academy Logo" width="95" />
           </div>
 
           <h1
