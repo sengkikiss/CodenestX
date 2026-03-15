@@ -52,7 +52,7 @@ const Sidebar = ({ page, setPage, user, onLogout, collapsed, setCollapsed }) => 
           {!collapsed && (
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ width: 45, height: 45, borderRadius: 8, overflow: "hidden", flexShrink: 0 }}>
-                <img src="src/logo.png" alt="logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <img src="/logo.png" alt="logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
               <span style={{ fontSize: 16, fontWeight: 800, color: "var(--text)", fontFamily: "'DM Serif Display',serif" }}>
                 CodenestX
